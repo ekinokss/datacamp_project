@@ -38,3 +38,29 @@ def get_books():
     rows = c.fetchall()
     conn.close()
     return rows
+
+def update_book(book_id, title, author, isbn, year, quantity):
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("UPDATE books SET title=?, author=?, isbn=?, year=?, quantity=? WHERE id=?",
+              (title, author, isbn, year, quantity, book_id))
+    conn.commit()
+    conn.close()
+
+#delete a book by id
+def delete_book(book_id):
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("DELETE FROM books WHERE id=?", (book_id,))
+    conn.commit()
+    conn.close()
+
+def search_books(keyword):
+    conn = connect_db()
+    c = conn.cursor()
+    query = "SELECT * FROM books WHERE title LIKE ? OR author LIKE ? OR isbn LIKE ?"
+    like = '%' + keyword + '%'
+    c.execute(query, (like, like, like))
+    result = c.fetchall()
+    conn.close()
+    return result
