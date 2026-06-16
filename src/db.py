@@ -64,3 +64,36 @@ def search_books(keyword):
     result = c.fetchall()
     conn.close()
     return result
+
+#member stuff
+def add_member(name, email, phone):
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("INSERT INTO members (name, email, phone) VALUES (?, ?, ?)",
+              (name, email, phone))
+    conn.commit()
+    conn.close()
+
+#get all members
+def get_members():
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("SELECT * FROM members")
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
+def update_member(member_id, name, email, phone):
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("UPDATE members SET name=?, email=?, phone=? WHERE id=?", (name, email, phone, member_id))
+    conn.commit()
+    conn.close()
+
+#delete member
+def delete_member(member_id):
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("DELETE FROM members WHERE id=?", (member_id,))
+    conn.commit()
+    conn.close()
