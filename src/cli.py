@@ -17,7 +17,7 @@ def main_menu():
         elif c == "2":
             member_menu()
         elif c == "3":
-            print("not done yet")
+            loan_menu()
         elif c == "4":
             print("goodbye")
             sys.exit(0)
@@ -161,6 +161,72 @@ def member_menu():
             print("deleted")
 
         elif ch == "5":
+            break
+        else:
+            print("invalid")
+
+#loan menu
+def loan_menu():
+    while True:
+        print("")
+        print("--- Loans ---")
+        print("1. Borrow a book")
+        print("2. Return a book")
+        print("3. Active loans")
+        print("4. Overdue loans")
+        print("5. All loans")
+        print("6. Back")
+
+        ch = input("choose > ")
+
+        if ch == "1":
+            try:
+                bid = int(input("book id: "))
+                mid = int(input("member id: "))
+            except:
+                print("ids must be numbers")
+                continue
+            ok = db.borrow_book(bid, mid)
+            if ok:
+                print("book borrowed")
+            else:
+                print("borrow failed check ids or quantity")
+
+        elif ch == "2":
+            try:
+                lid = int(input("loan id: "))
+            except:
+                print("id must be number")
+                continue
+            ok = db.return_book(lid)
+            if ok:
+                print("book returned")
+            else:
+                print("return failed check loan id")
+
+        elif ch == "3":
+            loans = db.get_active_loans()
+            if len(loans) == 0:
+                print("no active loans")
+            for l in loans:
+                print(f"loan#{l[0]} | {l[1]} | borrowed by {l[2]} on {l[3]}")
+
+        elif ch == "4":
+            overdue = db.get_overdue_loans()
+            if len(overdue) == 0:
+                print("no overdue loans")
+            for l in overdue:
+                print("OVERDUE loan#{} | {} | {} since {}".format(l[0], l[1], l[2], l[3]))
+
+        elif ch == "5":
+            all_loans = db.get_all_loans()
+            if len(all_loans) == 0:
+                print("no loans")
+            for l in all_loans:
+                status = "returned" if l[5] else "active"
+                print(f"loan#{l[0]} | {l[1]} | {l[2]} | {l[3]} | {l[4]} | {status}")
+
+        elif ch == "6":
             break
         else:
             print("invalid")
