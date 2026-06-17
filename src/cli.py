@@ -15,7 +15,7 @@ def main_menu():
         if c == "1":
             book_menu()
         elif c == "2":
-            print("not done yet")
+            member_menu()
         elif c == "3":
             print("not done yet")
         elif c == "4":
@@ -106,3 +106,61 @@ def book_menu():
             break
         else:
             print("invalid option")
+
+#member menu
+def member_menu():
+    while True:
+        print("")
+        print("--- Members ---")
+        print("1. Add member")
+        print("2. List members")
+        print("3. Update member")
+        print("4. Delete member")
+        print("5. Back")
+
+        ch = input("choose > ")
+
+        if ch == "1":
+            name = input("name: ")
+            email = input("email: ")
+            phone = input("phone: ")
+            if name == "":
+                print("name cant be empty")
+                continue
+            db.add_member(name, email, phone)
+            print("member added")
+
+        elif ch == "2":
+            members = db.get_members()
+            if len(members) == 0:
+                print("no members")
+            for m in members:
+                print("ID:" + str(m[0]) + " | " + m[1] + " | email:" + str(m[2]) + " | phone:" + str(m[3]) + " | joined:" + str(m[4]))
+
+        elif ch == "3":
+            mid = input("member id: ")
+            try:
+                mid = int(mid)
+            except:
+                print("id must be number")
+                continue
+            name = input("new name: ")
+            email = input("new email: ")
+            phone = input("new phone: ")
+            db.update_member(mid, name, email, phone)
+            print("updated")
+
+        elif ch == "4":
+            mid = input("member id to delete: ")
+            try:
+                mid = int(mid)
+            except:
+                print("id must be number")
+                continue
+            db.delete_member(mid)
+            print("deleted")
+
+        elif ch == "5":
+            break
+        else:
+            print("invalid")
