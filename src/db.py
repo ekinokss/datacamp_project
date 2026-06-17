@@ -97,3 +97,69 @@ def delete_member(member_id):
     c.execute("DELETE FROM members WHERE id=?", (member_id,))
     conn.commit()
     conn.close()
+
+#loan a book
+def borrow_book(book_id, member_id):
+    conn = connect_db()
+    c = conn.cursor()
+
+    #check quantity
+    c.execute("SELECT quantity FROM books WHERE id=?", (book_id,))
+    row = c.fetchone()
+    if row is None:
+        conn.close()
+        return False
+    if row[0] <= 0:
+        conn.close()
+        return False
+
+    c.execute("UPDATE books SET quantity = quantity - 1 WHERE id=?", (book_id,))
+    c.execute("INSERT INTO loans (book_id, member_id, loan_date) VALUES (?, ?, date('now'))",
+              (book_id, member_id))
+    conn.commit()
+    conn.close()
+    return True
+
+#return book
+def return_book(loan_id):
+    conn = connect_db()
+    c = conn.cursor()
+
+    c.execute("SELECT book_id FROM loans WHERE id=? AND returned=0", (loan_id,))
+    row = c.fetchone()
+    if row is None:
+        conn.close()
+        return False
+
+    book_id = row[0]
+    c.execute("UPDATE loans SET returned=1, return_date=date('now') WHERE id=?", (loan_id,))
+    c.execute("UPDATE books SET quantity = quantity + 1 WHERE id=?", (book_id,))
+    conn.commit()
+    conn.close()
+    return True
+
+#get loans that arent returned yet
+def get_active_loans():
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("""SELECT l.id, b.title, m.name, l.loan_date
+                 FROM loans l
+                 JOIN books b ON l.book_id = b.id
+                 JOIN members m ON l.member_id = m.id
+                 WHERE l.returned = 0""")
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
+#overdue check
+def get_overdue_loans():
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("""SELECT l.id, b.title, m.name, l.loan_date
+                 FROM loans l
+                 JOIN books b ON l.book_id = b.id
+                 JOIN members m ON l.member_id = m.id
+                 WHERE l.returned = 0 AND l.loan_date < date('now', '-14 days')""")
+    rows = c.fetchall()
+    conn.close()
+    return rows
