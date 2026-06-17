@@ -163,3 +163,15 @@ def get_overdue_loans():
     rows = c.fetchall()
     conn.close()
     return rows
+
+#all loans with book and member info
+def get_all_loans():
+    conn = connect_db()
+    c = conn.cursor()
+    c.execute("""SELECT l.id, b.title, m.name, l.loan_date, l.return_date, l.returned
+                 FROM loans l
+                 JOIN books b ON l.book_id = b.id
+                 JOIN members m ON l.member_id = m.id""")
+    rows = c.fetchall()
+    conn.close()
+    return rows
