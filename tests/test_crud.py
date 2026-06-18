@@ -22,6 +22,13 @@ class TestLibraryCRUD(unittest.TestCase):
             return c
         db.connect_db = test_connect
         db.init_db()
+        #cleanup sample data from schema
+        tmp = db.connect_db()
+        tmp.execute("DELETE FROM loans")
+        tmp.execute("DELETE FROM books")
+        tmp.execute("DELETE FROM members")
+        tmp.commit()
+        tmp.close()
 
     def tearDown(self):
         db.connect_db = self.old_connect
