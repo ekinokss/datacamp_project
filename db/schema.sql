@@ -1,6 +1,6 @@
 -- library database schema
 
-CREATE TABLE books (
+CREATE TABLE IF NOT EXISTS books (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE books (
     quantity INTEGER DEFAULT 1
 );
 
-CREATE TABLE members (
+CREATE TABLE IF NOT EXISTS members (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     email TEXT,
@@ -17,7 +17,7 @@ CREATE TABLE members (
     join_date TEXT DEFAULT (date('now'))
 );
 
-CREATE TABLE loans (
+CREATE TABLE IF NOT EXISTS loans (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     book_id INTEGER,
     member_id INTEGER,
@@ -29,7 +29,7 @@ CREATE TABLE loans (
 );
 
 -- sample data for testing
-INSERT INTO books (title, author, isbn, year, quantity) VALUES
+INSERT OR IGNORE INTO books (title, author, isbn, year, quantity) VALUES
 ('1984', 'George Orwell', '9780451524935', 1949, 3),
 ('To Kill a Mockingbird', 'Harper Lee', '9780061120084', 1960, 2),
 ('The Great Gatsby', 'F. Scott Fitzgerald', '9780743273565', 1925, 5),
@@ -38,7 +38,7 @@ INSERT INTO books (title, author, isbn, year, quantity) VALUES
 ('Dune', 'Frank Herbert', '9780441172719', 1965, 2),
 ('Clean Code', 'Robert C. Martin', '9780132350884', 2008, 3);
 
-INSERT INTO members (name, email, phone) VALUES
+INSERT OR IGNORE INTO members (name, email, phone) VALUES
 ('Ahmet Yilmaz', 'ahmet@example.com', '555-0101'),
 ('Ayse Demir', 'ayse@example.com', '555-0102'),
 ('Mehmet Kaya', 'mehmet@example.com', '555-0103'),
