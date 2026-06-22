@@ -1,1 +1,0 @@
-#no extra libraries needed sqlite3 comes with python
